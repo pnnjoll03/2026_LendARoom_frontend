@@ -68,7 +68,8 @@ const fetchMyBookings = async () => {
                             border: "1px solid #ccc",
                             borderRadius: "10px",
                             padding: "10px",
-                            backgroundColor: room.status === "Tersedia" ? "#e6fffa" : "#fff5f5"
+                            backgroundColor: room.status === "Tersedia" ? "#e6fffa" : "#fff5f5",
+                            color: "black"
                         }}>
                         
                             <h3>{room.name}</h3>
