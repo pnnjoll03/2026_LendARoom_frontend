@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import History from "./History";
+import RoomList from "./RoomList";
+import type { Room } from "./RoomList";
 
-interface Room {
-    id: number;
-    name: string;
-    status: string;
-    capacity: number;
-    location: string;
-}
 
 interface userData {
     username: string;
@@ -170,27 +165,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         }
     }
 
-    const handleDeleteRoom = async (roomId: number) => {
-        if(!window.confirm("Apakah anda yakin ingin menghapus ruangan ini?")) return;
-
-        try{
-            const response = await fetch(`http://localhost:5187/api/LoanRequest/${roomId}`, {
-                method: "DELETE"
-            });
-            
-            if(response.ok){
-                alert("Ruangan berhasil dihapus!");
-                fetchRoom();
-            }else{
-                const err = await response.text();
-                alert("Gagal menghapus: " + err);
-            }
-        }catch(error){
-            console.error("Error: ", error);
-            alert("Terjadi kesalahan koneksi.")
-        }
-    }
-
     const resetForm = () => {
         setSelectedRoom(null);
         setEditBookingId(null);
@@ -229,35 +203,12 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 <main style={{ flex: "1" , overflow: "auto", marginLeft: "10px"}}>
                     {activeTab === "home" ? (
                         <section>
-                            <h2>Daftar Ruangan</h2>
-                            <div style={{ display: "flex", overflowX: "auto", gap: "15px", paddingBottom: "10px" }}>
-                                {rooms.map((room) => (
-                                    <div key={room.id} style={{ minWidth: "250px", border: "1px solid #ccc", borderRadius: "10px", padding: "10px", backgroundColor: room.status === "Tersedia" ? "#e6fffa" : "#fff5f5", color: "black" }}>
-                                        <h3>{room.name}</h3>
-                                        <p>{room.location}</p>
-                                        <p>Kapasita : {room.capacity} mahasiswa</p>
-                                        <p style={{ color: room.status === "Tersedia" ? "green" : "red", fontWeight: "bold" }}>{room.status}</p>
-                                        { user.role === "Mahasiswa" && (
-                                            <button disabled={room.status !== "Tersedia"} onClick={() => setSelectedRoom(room)}>Booking Ruangan</button>
-                                        )}
-
-                                        { user.role === "Admin" && (
-                                            <button onClick={() => handleDeleteRoom(room.id)}
-                                                style={{ 
-                                                    backgroundColor: "red",
-                                                    color: "white",
-                                                    border: "none",
-                                                    marginTop: "10px",
-                                                    borderRadius: "5px",
-                                                    cursor: "pointer",
-                                                    width: "100%"
-                                                }}>
-                                                Hapus Ruangan
-                                            </button>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
+                            <RoomList
+                                rooms={rooms}
+                                role={user.role}
+                                onRoomUpdate={fetchRoom}
+                                onBookingClick={(room) => setSelectedRoom(room)}
+                            />
 
                             <hr style={{ margin: "30px 0" }} />
 
