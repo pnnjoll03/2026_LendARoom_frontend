@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import History from "./History";
 
 interface Room {
     id: number;
@@ -39,8 +40,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
     const [description, setDescription] = useState("");
     const [editBookingId, setEditBookingId] = useState<number | null>(null);
     const [activeTab, setActiveTab] = useState<"home" | "history">("home");
-
-    // State Baru untuk Form Tambah Ruangan
     const [isAddRoomModalOpen, setIsAddRoomModalOpen] = useState(false);
     const [newRoom, setNewRoom] = useState({ name: "", capacity: 0, location: "" });
     
@@ -171,6 +170,27 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         }
     }
 
+    const handleDeleteRoom = async (roomId: number) => {
+        if(!window.confirm("Apakah anda yakin ingin menghapus ruangan ini?")) return;
+
+        try{
+            const response = await fetch(`http://localhost:5187/api/LoanRequest/${roomId}`, {
+                method: "DELETE"
+            });
+            
+            if(response.ok){
+                alert("Ruangan berhasil dihapus!");
+                fetchRoom();
+            }else{
+                const err = await response.text();
+                alert("Gagal menghapus: " + err);
+            }
+        }catch(error){
+            console.error("Error: ", error);
+            alert("Terjadi kesalahan koneksi.")
+        }
+    }
+
     const resetForm = () => {
         setSelectedRoom(null);
         setEditBookingId(null);
@@ -180,7 +200,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
     return (
         <div>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: "center", backgroundColor:"green", padding: "0 15px"}}>
+            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: "center", backgroundColor:"green", padding: "0 15px", color: "white"}}>
                 <h1>Selamat datang, {user.username}!({user.role})</h1>
                 <div style={{ display:"flex", justifyContent: "space-between", gap:"8px"}}>
                     {user.role === "Admin" && (
@@ -220,6 +240,21 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                         { user.role === "Mahasiswa" && (
                                             <button disabled={room.status !== "Tersedia"} onClick={() => setSelectedRoom(room)}>Booking Ruangan</button>
                                         )}
+
+                                        { user.role === "Admin" && (
+                                            <button onClick={() => handleDeleteRoom(room.id)}
+                                                style={{ 
+                                                    backgroundColor: "red",
+                                                    color: "white",
+                                                    border: "none",
+                                                    marginTop: "10px",
+                                                    borderRadius: "5px",
+                                                    cursor: "pointer",
+                                                    width: "100%"
+                                                }}>
+                                                Hapus Ruangan
+                                            </button>
+                                        )}
                                     </div>
                                 ))}
                             </div>
@@ -244,7 +279,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                                 </div>
                                                 <span style={{ padding: "5px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold", backgroundColor: booking.status === "Pending" ? "orange" : booking.status === "Approved" ? "green" : "red", color: "white", height: "fit-content" }}>{booking.status}</span>
                                             </div>
-                                            {/* Tombol-tombol aksi tetap sama seperti sebelumnya */}
                                             { user.role === "Mahasiswa" && booking.status === "Pending" && (
                                                 <button onClick={() => handleEditBookingRequest(booking)} style={{ backgroundColor:"orange", color:"white", padding: "8px", borderRadius: "5px", border:"none", cursor: "pointer"}}>Edit</button>
                                             )}
@@ -264,8 +298,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                         </section>
                     ) : (
                         <section>
-                            <h2>History Peminjaman</h2>
-                            <p style={{ color: "gray", fontStyle: "italic" }}>Halaman history akan segera hadir.</p>
+                            <History bookings={myBookings} role={user.role} />
                         </section>
                     )}
 
