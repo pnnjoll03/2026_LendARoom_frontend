@@ -40,7 +40,9 @@ export default function History({ bookings, role} : HistoryProps) {
                             <p style={{ fontSize: "12px"}}>Keperluan: {item.description}</p>
                             <span style={{ 
                                 backgroundColor: item.status === "Completed" ? "green" : "red",
-                                color: item.status === "Completed" ? "green" : "red"
+                                color: "white",
+                                padding: "2px 4px",
+                                borderRadius: "5px"
                             }}>
                                 {item.status}
                             </span>
