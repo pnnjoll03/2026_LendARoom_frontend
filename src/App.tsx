@@ -1,8 +1,8 @@
 import { useState} from 'react'
+import "./App.css";
 import Login from './components/Login';
 import Register from './components/Regisiter';
 import Dashboard from './components/Dashboard';
-import './App.css'
 
 function App() {
   const [page, setPage] = useState<'login' | 'register' | 'dashboard'>('login');
