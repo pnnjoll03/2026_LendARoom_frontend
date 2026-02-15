@@ -143,7 +143,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                             />
                         </>
                     ) : (
-                        <History bookings={myBookings} role={user.role} />
+                        <History bookings={myBookings} role={user.role} onRefresh={fetchMyBookings} />
                     )}
                 </main>
             </div>
