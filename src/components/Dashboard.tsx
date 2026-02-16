@@ -19,10 +19,10 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
     const [myBookings, setMyBookings] = useState<LoanRequest[]>([]);
     const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
     const [borrowDate, setBorrowDate] = useState("");
+    const [returnDate, setReturnDate] = useState("");
     const [description, setDescription] = useState("");
     const [editBookingId, setEditBookingId] = useState<number | null>(null);
     const [activeTab, setActiveTab] = useState<"home" | "history">("home");
-    const [isAddRoomModalOpen, setIsAddRoomModalOpen] = useState(false);
 
     const fetchRoom = () => {
         fetch("http://localhost:5187/api/Room")
@@ -53,7 +53,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         fetchAllData();
     }, [user.role, user.username]);
 
-    // --- LOGIC BOOKING (POST/PUT) ---
     const handleConfirmBooking = async (e: React.FormEvent) => {
         e.preventDefault();
         
@@ -62,17 +61,20 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             : "http://localhost:5187/api/LoanRequest/booking";
 
         const method = editBookingId ? "PUT" : "POST";
-        // Sesuaikan payload dengan DTO Backend kamu
+        
         const payload = editBookingId 
             ? { 
                 BorrowDate: borrowDate, 
+                ReturnDate: returnDate, // BARU
                 Description: description 
             } : { 
                 Name: user.username,
                 NRP: user.nrp, 
                 RoomId: selectedRoom?.id, 
                 BorrowDate: borrowDate, 
-                Description: description };
+                ReturnDate: returnDate, // BARU
+                Description: description 
+            };
 
         try {
             const response = await fetch(url, {
@@ -98,6 +100,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         setSelectedRoom(null);
         setEditBookingId(null);
         setBorrowDate("");
+        setReturnDate(""); // RESET
         setDescription("");
     };
 
@@ -105,11 +108,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: "center", backgroundColor: "green", padding: "0 15px", color: "white" }}>
                 <h1>LendARoom - {user.username} ({user.role})</h1>
-                <div style={{ display: "flex", gap: "10px" }}>
-                    <button onClick={onLogout} style={{ backgroundColor: "red", color: "white", border: "none", padding: "8px 15px", borderRadius: "5px", cursor: "pointer" }}>
-                        Logout
-                    </button>
-                </div>
+                <button onClick={onLogout} style={{ backgroundColor: "red", color: "white", border: "none", padding: "8px 15px", borderRadius: "5px", cursor: "pointer" }}>Logout</button>
             </header>
 
             <div style={{ display: "flex", flex: 1 }}>
@@ -127,9 +126,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                 onRoomUpdate={fetchAllData} 
                                 onBookingClick={(room) => setSelectedRoom(room)} 
                             />
-                            
                             <hr style={{ margin: "30px 0" }} />
-
                             <LoanRequestList 
                                 bookings={myBookings} 
                                 role={user.role} 
@@ -138,6 +135,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                     setEditBookingId(booking.id);
                                     setSelectedRoom(booking.room as Room);
                                     setBorrowDate(booking.borrowDate.substring(0, 16));
+                                    setReturnDate(booking.returnDate ? booking.returnDate.substring(0, 16) : "");
                                     setDescription(booking.description);
                                 }}
                             />
@@ -151,21 +149,23 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             {selectedRoom && (
                 <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }}>
                     <div style={{ backgroundColor: "white", padding: "20px", borderRadius: "10px", width: "350px", color: "black" }}>
-                        <h3 style={{ marginTop: 0 }}>{editBookingId ? `Edit Booking` : `Booking ${selectedRoom.name}`}</h3>
+                        <h3>{editBookingId ? `Edit Booking` : `Booking ${selectedRoom.name}`}</h3>
                         <form onSubmit={handleConfirmBooking}>
+                            <div style={{ marginBottom: "10px" }}>
+                                <label style={{ display: "block", fontWeight: "bold" }}>Waktu Mulai</label>
+                                <input type="datetime-local" required style={{ width: "100%", padding: "8px" }} value={borrowDate} onChange={(e) => setBorrowDate(e.target.value)} />
+                            </div>
                             <div style={{ marginBottom: "15px" }}>
-                                <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>Waktu Peminjaman</label>
-                                <input type="datetime-local" required style={{ width: "100%", padding: "8px", boxSizing: "border-box" }} value={borrowDate} onChange={(e) => setBorrowDate(e.target.value)} />
+                                <label style={{ display: "block", fontWeight: "bold" }}>Waktu Selesai</label>
+                                <input type="datetime-local" required style={{ width: "100%", padding: "8px" }} value={returnDate} onChange={(e) => setReturnDate(e.target.value)} />
                             </div>
                             <div style={{ marginBottom: "20px" }}>
-                                <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>Keperluan</label>
-                                <textarea required placeholder="Contoh: Rapat Himpunan" style={{ width: "100%", padding: "8px", boxSizing: "border-box", minHeight: "80px" }} value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
+                                <label style={{ display: "block", fontWeight: "bold" }}>Keperluan</label>
+                                <textarea required style={{ width: "100%", padding: "8px" }} value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
                             </div>
                             <div style={{ display: "flex", gap: "10px" }}>
-                                <button type="submit" style={{ flex: 1, backgroundColor: "#28a745", color: "white", padding: "10px", border: "none", borderRadius: "5px", cursor: "pointer", fontWeight: "bold" }}>
-                                    {editBookingId ? "Simpan" : "Kirim"}
-                                </button>
-                                <button type="button" onClick={resetForm} style={{ flex: 1, backgroundColor: "#dc3545", color: "white", padding: "10px", border: "none", borderRadius: "5px", cursor: "pointer" }}>Batal</button>
+                                <button type="submit" style={{ flex: 1, backgroundColor: "#28a745", color: "white", padding: "10px", border: "none", borderRadius: "5px" }}>{editBookingId ? "Simpan" : "Kirim"}</button>
+                                <button type="button" onClick={resetForm} style={{ flex: 1, backgroundColor: "#dc3545", color: "white", padding: "10px", border: "none", borderRadius: "5px" }}>Batal</button>
                             </div>
                         </form>
                     </div>
