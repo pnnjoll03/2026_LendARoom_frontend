@@ -19,10 +19,17 @@ export default function History({ bookings, role, onRefresh} : HistoryProps) {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<LoanRequest | null>(null);
     const [editForm, setEditForm] = useState({borrowDate: "", description: "", status: ""});
+    const [searchItem, setSearchItem] = useState("");
 
-    const historyData = bookings.filter(
-        (b) => b.status === "Completed" || b.status === "Rejected"
-    );
+    const historyData = bookings.filter((b) => {
+            const isHistoryStatus = b.status === "Completed" || b.status === "Rejected";
+
+            const matchSearch = role === "Admin"
+                ? b.user?.username.toLocaleLowerCase().includes(searchItem.toLocaleLowerCase())
+                : b.room?.name.toLowerCase().includes(searchItem.toLowerCase());
+                
+            return isHistoryStatus && matchSearch;
+        });
 
     const handleDelete = async (id: number) => {
         if(!window.confirm("Apakah anda yakin ingin menghapus riwayat ini?")) return;
@@ -68,7 +75,40 @@ export default function History({ bookings, role, onRefresh} : HistoryProps) {
 
     return (
         <section style={{ padding: "20px" }}>
-            <h2>History Peminjaman</h2>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px"}}>
+                <h2>History Peminjaman</h2>
+                <div style={{ position: "relative"}}>
+                    <input 
+                        type="text"
+                        placeholder={role === "Admin" ? "Cari nama peminjam ..." : "Cari nama Ruangan..."}
+                        value={searchItem}
+                        onChange={(e) => setSearchItem(e.target.value)}
+                        style={{
+                                padding: "8px 12px",
+                                borderRadius: "20px",
+                                border: "1px solid #ccc",
+                                width: "250px",
+                                outline: "none",
+                                color: "black"
+                            }}
+                    />
+                    {searchItem && (
+                        <button 
+                            onClick={() => setSearchItem("")}
+                            style={{
+                                position: "absolute",
+                                right: "10px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                border: "none",
+                                background: "none",
+                                cursor: "pointer",
+                                color: "gray"
+                            }}
+                        >✕</button>
+                    )}
+                </div>
+            </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "15px" }}>
                 {historyData.length === 0 ? (
                     <p style={{ color: "gray", fontStyle: "italic" }}>Belum ada riwayat peminjaman</p>
