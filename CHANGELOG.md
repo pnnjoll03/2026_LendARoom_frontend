@@ -2,11 +2,12 @@
 Semua perubahan penting dalam proyek LendARoom akan dicatat dalam file ini.
 
 ## [1.0.0] - 2026-02-17
+## [1.0.0] - 2026-02-17
 ### Added
-- Inisialisasi repositori frontend/backend.
-- Implementasi modul CRUD (Create, Read, Update, Delete).
-- Setup GitHub Project Board dengan kolom To Do, In Progress, dan Done.
-- Dokumentasi README.md lengkap dengan panduan instalasi.
+- Inisialisasi proyek menggunakan Vite dan TypeScript.
+- Dashboard interaktif untuk menampilkan daftar ruangan.
+- Integrasi Fetch API untuk mengambil data dari backend.
+- Implementasi form booking dengan validasi input.
 
 ### Fixed
 - Perbaikan sinkronisasi data pada dashboard.
