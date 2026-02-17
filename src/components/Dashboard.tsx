@@ -65,14 +65,14 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         const payload = editBookingId 
             ? { 
                 BorrowDate: borrowDate, 
-                ReturnDate: returnDate, // BARU
+                ReturnDate: returnDate,
                 Description: description 
             } : { 
                 Name: user.username,
                 NRP: user.nrp, 
                 RoomId: selectedRoom?.id, 
                 BorrowDate: borrowDate, 
-                ReturnDate: returnDate, // BARU
+                ReturnDate: returnDate,
                 Description: description 
             };
 
@@ -100,14 +100,14 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         setSelectedRoom(null);
         setEditBookingId(null);
         setBorrowDate("");
-        setReturnDate(""); // RESET
+        setReturnDate(""); 
         setDescription("");
     };
 
     return (
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: "center", backgroundColor: "green", padding: "0 15px", color: "white" }}>
-                <h1>LendARoom - {user.username} ({user.role})</h1>
+                <h1>LendARoom</h1>
                 <button onClick={onLogout} style={{ backgroundColor: "red", color: "white", border: "none", padding: "8px 15px", borderRadius: "5px", cursor: "pointer" }}>Logout</button>
             </header>
 

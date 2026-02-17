@@ -22,7 +22,7 @@ export default function Login({ onSwitch, onLoginSuccess } : LoginProps ){
 
             if(response.ok){
                 const data = await response.json();
-                alert(`Selamat datang ${data.username}! Role anda adalah ${data.role}`);
+                alert(`Selamat datang ${data.username}!`);
                 onLoginSuccess(data);
             }else{
                 const errorMsg = await response.text();
@@ -34,15 +34,47 @@ export default function Login({ onSwitch, onLoginSuccess } : LoginProps ){
         }
     };
 
+    const styles = {
+        input: {
+            width: "100%",
+            padding: "12px",
+            margin: "10px 0",
+            borderRadius: "5px",
+            border: "1px solid #ddd",
+            fontSize: "16px",
+            boxSizing: "border-box" as const
+        },
+        button: {
+            width: "100%",
+            padding: "12px",
+            marginTop: "15px",
+            borderRadius: "5px",
+            border: "none",
+            backgroundColor: "green",
+            color: "white",
+            fontSize: "16px",
+            fontWeight: "bold"
+        },
+        link: {
+            color: "green",
+            cursor: "pointer",
+            fontWeight: "bold",
+            textDecoration: "underline"
+        }
+    }
+
     return (
-        <div className="auth-card">
-            <h2>Login LendARoom</h2>
-            <form onSubmit={handleLogin}>
-                <input type="text" placeholder="Username" onChange={(e) => setUsername(e.target.value)} required/>
-                <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} required/>
-                <button type="submit">Login</button>
-            </form>
-            <p>Belum punya akun? <span onClick={onSwitch} style={{color: 'blue', cursor: 'pointer'}}>daftar di sini</span></p>
+        <div  style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "#f4f4f4", fontFamily: "Arial, sans-serif" }}>
+            <div className="auth-card" style={{ backgroundColor: "white", padding: "40px", borderRadius: "10px", boxShadow: "0 4px 15px rgba(0,0,0,1)", width: "100%", maxWidth: "380px", textAlign: "center" as const, borderTop: "10px solid green"}}>
+                <h2 style={{ color: "green", marginBottom: "5px" }}>Login LendARoom</h2>
+                <p style={{ color: "#666", marginBottom: "25px" }}>Silakan masuk ke akun anda</p>
+                <form onSubmit={handleLogin}>
+                    <input type="text" placeholder="Username" onChange={(e) => setUsername(e.target.value)} style={styles.input} required/>
+                    <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} style={styles.input} required/>
+                    <button type="submit" style={styles.button}>Login</button>
+                </form>
+                <p>Belum punya akun? <span onClick={onSwitch} style={styles.link}>daftar di sini</span></p>
+            </div>
         </div>
     )
 }

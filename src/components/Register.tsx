@@ -30,17 +30,67 @@ export default function Register({onSwitch}: RegisterProps){
         }
     };
 
+    const styles = {
+        container: {
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "100vh",
+            backgroundColor: "#f4f4f4",
+            fontFamily: "Arial, sans-serif"
+        },
+        card: {
+            backgroundColor: "white",
+            padding: "40px",
+            borderRadius: "10px",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+            width: "100%",
+            maxWidth: "420px",
+            textAlign: "center" as const,
+            borderTop: "10px solid green"
+        },
+        input: {
+            width: "100%",
+            padding: "12px",
+            margin: "8px 0",
+            borderRadius: "5px",
+            border: "1px solid #ddd",
+            fontSize: "15px",
+            boxSizing: "border-box" as const
+        },
+        button: {
+            width: "100%",
+            padding: "12px",
+            marginTop: "15px",
+            borderRadius: "5px",
+            border: "none",
+            backgroundColor: "green",
+            color: "white",
+            fontSize: "16px",
+            fontWeight: "bold",
+        },
+        link: {
+            color: "green",
+            cursor: "pointer",
+            fontWeight: "bold",
+            textDecoration: "underline"
+        }
+    };
+
     return (
-        <div className="auth-card">
-            <h2>Daftar Akun Baru</h2>
-            <form onSubmit={handleRegister}>
-                <input type="text" placeholder="Username" onChange={(e) => setForm({...form, username: e.target.value})} required/>
-                <input type="password" placeholder="Password" onChange={(e) => setForm({...form, password: e.target.value})} required/>
-                <input type="text" placeholder="NRP" onChange={(e) => setForm({...form, nrp: e.target.value})} required/>
-                <input type="text" placeholder="Kelas" onChange={(e) => setForm({...form, class: e.target.value})} required/>
-                <button type="submit">Daftar</button>
-            </form>
-            <p>Sudah punya akun?<span onClick={onSwitch} style={{ color: 'blue', cursor: 'pointer'}}>Login di sini</span></p>
+        <div style={styles.container}>
+            <div className="auth-card" style={styles.card}>
+                <h2 style={{ color: "green", marginBottom: "5px" }}>Daftar Akun Baru</h2>
+                <p style={{ color: "#666", marginBottom: "20px" }}>Lengkapi data dibawah ini</p>
+                <form onSubmit={handleRegister}>
+                    <input type="text" placeholder="Username" onChange={(e) => setForm({...form, username: e.target.value})} style={styles.input} required/>
+                    <input type="password" placeholder="Password" onChange={(e) => setForm({...form, password: e.target.value})} style={styles.input} required/>
+                    <input type="text" placeholder="NRP" onChange={(e) => setForm({...form, nrp: e.target.value})} style={styles.input} required/>
+                    <input type="text" placeholder="Kelas" onChange={(e) => setForm({...form, class: e.target.value})} style={styles.input} required/>
+                    <button type="submit" style={styles.button}>Daftar</button>
+                </form>
+                <p>Sudah punya akun?<span onClick={onSwitch} style={styles.link}>Login di sini</span></p>
+            </div>
         </div>
     )
 }
