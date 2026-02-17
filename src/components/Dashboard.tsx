@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import History from "./History";
+import History, { type HistoryItem } from "./History"; 
 import RoomList, { type Room } from "./RoomList";
 import LoanRequestList, { type LoanRequest } from "./LoanRequestList";
 
@@ -17,6 +17,7 @@ interface DashboardProps {
 export default function Dashboard({ user, onLogout }: DashboardProps) {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [myBookings, setMyBookings] = useState<LoanRequest[]>([]);
+    const [historyLogs, setHistoryLogs] = useState<HistoryItem[]>([]); 
     const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
     const [borrowDate, setBorrowDate] = useState("");
     const [returnDate, setReturnDate] = useState("");
@@ -44,9 +45,27 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         }
     };
 
+    const fetchHistory = async () => {
+        try {
+            const response = await fetch("http://localhost:5187/api/LoanHistory");
+            if(response.ok) {
+                const data = await response.json();
+                if (user.role !== "Admin") {
+                    const filtered = data.filter((h: any) => h.name === user.username);
+                    setHistoryLogs(filtered);
+                } else {
+                    setHistoryLogs(data);
+                }
+            }
+        } catch (error) {
+            console.error("Gagal mengambil history: ", error);
+        }
+    }
+
     const fetchAllData = () => {
         fetchRoom();
         fetchMyBookings();
+        fetchHistory(); 
     };
 
     useEffect(() => {
@@ -55,26 +74,13 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
     const handleConfirmBooking = async (e: React.FormEvent) => {
         e.preventDefault();
-        
         const url = editBookingId 
             ? `http://localhost:5187/api/LoanRequest/${editBookingId}/editloanrequest` 
             : "http://localhost:5187/api/LoanRequest/booking";
-
         const method = editBookingId ? "PUT" : "POST";
-        
         const payload = editBookingId 
-            ? { 
-                BorrowDate: borrowDate, 
-                ReturnDate: returnDate,
-                Description: description 
-            } : { 
-                Name: user.username,
-                NRP: user.nrp, 
-                RoomId: selectedRoom?.id, 
-                BorrowDate: borrowDate, 
-                ReturnDate: returnDate,
-                Description: description 
-            };
+            ? { BorrowDate: borrowDate, ReturnDate: returnDate, Description: description } 
+            : { Name: user.username, NRP: user.nrp, RoomId: selectedRoom?.id, BorrowDate: borrowDate, ReturnDate: returnDate, Description: description };
 
         try {
             const response = await fetch(url, {
@@ -82,7 +88,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
-
             if (response.ok) {
                 alert(editBookingId ? "Berhasil diperbarui!" : "Berhasil diajukan!");
                 resetForm();
@@ -91,9 +96,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 const err = await response.text();
                 alert(err);
             }
-        } catch (err) {
-            alert("Terjadi kesalahan koneksi.");
-        }
+        } catch (err) { alert("Koneksi error"); }
     };
 
     const resetForm = () => {
@@ -141,7 +144,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                             />
                         </>
                     ) : (
-                        <History bookings={myBookings} role={user.role} onRefresh={fetchMyBookings} />
+                        <History bookings={historyLogs} role={user.role} onRefresh={fetchAllData} />
                     )}
                 </main>
             </div>
