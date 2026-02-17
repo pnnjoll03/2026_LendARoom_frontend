@@ -1,73 +1,35 @@
-# React + TypeScript + Vite
+# 2026-LendARoom-frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
+LendARoom Frontend adalah antarmuka web interaktif yang memungkinkan mahasiswa untuk melihat ketersediaan ruangan dan melakukan peminjaman secara digital. Dashboard ini dirancang untuk memudahkan interaksi antara pengguna dan sistem backend LendARoom.
 
-Currently, two official plugins are available:
+## Features
+***Interactive Dashboard**: Menampilkan ketersediaan ruangan secara real-time[cite: 208].
+***Booking Form**: Modal interaktif untuk pengajuan peminjaman ruangan[cite: 208].
+***Loan History View**: Tab khusus untuk memantau arsip dan status peminjaman[cite: 238].
+* **Responsive Design**: Tampilan yang optimal di berbagai perangkat.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+* **Framework**: React.js dengan TypeScript
+* **Tooling**: Vite
+* **HTTP Client**: Fetch API / Axios
 
-## React Compiler
+## Installation
+1. Pastikan Node.js sudah terinstal.
+2. Jalankan perintah:
+  `npm install` 
+3. Jalankan aplikasi:
+  `npm run dev` 
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Usage
+Aplikasi dapat diakses melalui browser di `http://localhost:5173`. Pastikan server backend sudah aktif agar data dapat dimuat.
 
-## Expanding the ESLint configuration
+## Environment Variables
+Konfigurasi pada file `.env`:
+* `VITE_API_URL`: URL API Backend (Contoh: http://localhost:5187/api).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## License
+MIT License 
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Credits
+**Author**: Tim LendARoom 2026 
