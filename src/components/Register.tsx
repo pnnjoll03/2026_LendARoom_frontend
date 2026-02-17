@@ -89,7 +89,7 @@ export default function Register({onSwitch}: RegisterProps){
                     <input type="text" placeholder="Kelas" onChange={(e) => setForm({...form, class: e.target.value})} style={styles.input} required/>
                     <button type="submit" style={styles.button}>Daftar</button>
                 </form>
-                <p>Sudah punya akun?<span onClick={onSwitch} style={styles.link}>Login di sini</span></p>
+                <p style={{color: "#666"}}>Sudah punya akun?<span onClick={onSwitch} style={styles.link}>Login di sini</span></p>
             </div>
         </div>
     )

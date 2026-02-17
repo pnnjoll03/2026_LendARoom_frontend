@@ -73,7 +73,7 @@ export default function Login({ onSwitch, onLoginSuccess } : LoginProps ){
                     <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} style={styles.input} required/>
                     <button type="submit" style={styles.button}>Login</button>
                 </form>
-                <p>Belum punya akun? <span onClick={onSwitch} style={styles.link}>daftar di sini</span></p>
+                <p style={{color: "#666"}}>Belum punya akun? <span onClick={onSwitch} style={styles.link}>daftar di sini</span></p>
             </div>
         </div>
     )
